@@ -1,0 +1,6 @@
+repo/
+download/
+*.log
+*.swp
+*.bak
+*~
