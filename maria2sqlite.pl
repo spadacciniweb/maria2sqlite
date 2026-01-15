@@ -73,7 +73,7 @@ sub unwrap_row {
     $_ = shift;
 
     if (/^\/\*!\d{5} (.+) ?\*\/(;)?$/) {
-        return $1 . $2 || '';
+        return $1 . ($2 || '');
     }
 
     return $_;
