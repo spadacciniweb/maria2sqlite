@@ -105,105 +105,100 @@ sub change_DDL {
     $_ = shift;
 
     # (un-)signed)
-    $_  =~ s/( (un)?signed)//gi;
+    $_  =~ s/\b(?:un)?signed\b//gi;
     $_  =~ s/\bAUTO_INCREMENT\b/AUTOINCREMENT/i;
-    $_  =~ s/\(\)//g;
+    $_  =~ s/\(\s*\)//g;
 
     # INTEGER
-    $_  =~ s/\bbit\(\d+\)/integer/gi;
-    $_  =~ s/\bbigint\(\d+\)/integer/gi;
+    $_  =~ s/\bbit\s*\(\d+\)/integer/gi;
+    $_  =~ s/\bbigint\s*\(\d+\)/integer/gi;
     $_  =~ s/\bbool\b/integer/gi;
-    $_  =~ s/\bboolean\b/integer/gi;
-    $_  =~ s/\bint\(\d+\)/integer/gi;
-    $_  =~ s/\bint\d/integer/gi;
-    $_  =~ s/\binteger\(\d\)/integer/gi;
-    $_  =~ s/\bmediumint\(\d+\)/integer/gi;
-    $_  =~ s/\bmiddleint\(\d+\)/integer/gi;
-    $_  =~ s/\bserial/integer NOT NULL AUTO_INCREMENT/gi; #TODO manca UNIQUE
-    $_  =~ s/\bsmallint\(\d+\)/integer/gi;
-    $_  =~ s/\btinyint\(\d+\)/integer/gi;
+    $_  =~ s/\bboolean\s*\b/integer/gi;
+    $_  =~ s/\bint\s*\(\d+\)/integer/gi;
+    $_  =~ s/\bint\d\b/integer/gi;
+    $_  =~ s/\binteger\s*\(\d\)/integer/gi;
+    $_  =~ s/\bmediumint\s*\(\d+\)/integer/gi;
+    $_  =~ s/\bmiddleint\s*\(\d+\)/integer/gi;
+    $_  =~ s/\bserial\b/integer NOT NULL AUTO_INCREMENT/gi;
+    $_  =~ s/\bsmallint\s*\(\d+\)/integer/gi;
+    $_  =~ s/\btinyint\s*\(\d+\)/integer/gi;
 
     # NUMERIC / REAL
-    $_ =~ s/\bdec\(\d+,\d+\)/numeric/gi;
+    $_ =~ s/\bdec\s*\(\d+,\d+\)/numeric/gi;
     $_ =~ s/\bdecimal\b/numeric/gi;
-    $_ =~ s/\bdecimal\(\d+\)/numeric/gi;
-    $_ =~ s/\bdecimal\(\d+,\d+\)/numeric/gi;
-    $_ =~ s/\bfixed\(\d+,\d+\)/numeric/gi;
+    $_ =~ s/\bdecimal\s*\(\d+(,\d+)?\)/numeric/gi;
+    $_ =~ s/\bfixed\s*\(\d+,\d+\)/numeric/gi;
     $_ =~ s/\bnumeric\b/numeric/gi;
-    $_ =~ s/\bnumeric\(\d+\)/numeric/gi;
-    $_ =~ s/\bnumeric\(\d+,\d+\)/numeric/gi;
+    $_ =~ s/\bnumeric\s*\(\d+(,\d+)?\)/numeric/gi;
 
     # REAL / FLOATING POINT
     $_ =~ s/\bfloat\b/real/gi;
-    $_ =~ s/\bfloat\(\d+\)/real/gi;
-    $_ =~ s/\bfloat\(\d+,\d+\)/real/gi;
-    $_ =~ s/\bdouble\(\d+\)/real/gi;
-    $_ =~ s/\bdouble\(\d+,\d+\)/real/gi;
-    $_ =~ s/\bdouble(\s+precision)?/real/gi;
+    $_ =~ s/\bfloat\s*\(\d+(,\d+)?\)/real/gi;
+    $_ =~ s/\bdouble\s*\(\d+(,\d+)?\)/real/gi;
+    $_ =~ s/\bdouble\s*(\s+precision)?/real/gi;
     $_ =~ s/\breal\b/real/gi;
 
     # DATE / TIME / DATETIME / TIMESTAMP
     $_ =~ s/\bdate\b/text/gi;
     $_ =~ s/\bdatetime\b/text/gi;
-    $_ =~ s/\bdatetime\(\d+\)/text/gi;
-    $_ =~ s/\btimestamp\(\d+\)/text/gi;
-    $_ =~ s/\btimestamp\b/text/gi;
+    $_ =~ s/\bdatetime\s*\(\d+\)/text/gi;
     $_ =~ s/\btime\b/text/gi;
-    $_ =~ s/\byear\(\d+\)/integer/gi;
+    $_ =~ s/\btimestamp\s*\(\d+\)/text/gi;
+    $_ =~ s/\btimestamp\b/text/gi;
+    $_ =~ s/\byear\s*\(\d+\)/integer/gi;
 
     # TEXT TYPES
     $_ =~ s/\bchar\b/text/gi;
-    $_ =~ s/\bchar\(\d+\)/text/gi;
-    $_ =~ s/\benum\([^)]+\)/text/gi;
-    $_ =~ s/\bjson/text/gi;
+    $_ =~ s/\bchar\s*\(\d+\)/text/gi;
+    $_ =~ s/\benum\s*\([^)]+\)/text/gi;
+    $_ =~ s/\bjson\b/text/gi;
     $_ =~ s/\blongtext\b/text/gi;
     $_ =~ s/\bmediumtext\b/text/gi;
-    $_ =~ s/\bnchar\(\d+\)/text/gi;
-    $_ =~ s/\bnvarchar\(\d+\)/text/gi;
-    $_ =~ s/\bset\([^)]+\)/text/gi;
+    $_ =~ s/\bnchar\s*\(\d+\)/text/gi;
+    $_ =~ s/\bnvarchar\s*\(\d+\)/text/gi;
+    $_ =~ s/\bset\s*\([^)]+\)/text/gi;
     $_ =~ s/\btext\b/text/gi;
-    $_ =~ s/\btinytext/text/gi;
+    $_ =~ s/\btinytext\b/text/gi;
     $_ =~ s/\bvarchar\(\d+\)/text/gi;
     $_ =~ s/\bvarchar\b/text/gi;
 
     # BLOB TYPES
-    $_ =~ s/\bbinary\(\d+\)/blob/gi;
+    $_ =~ s/\bbinary\s*\(\d+\)/blob/gi;
     $_ =~ s/\bblob\b/blob/gi;
-    $_ =~ s/\blongblob/blob/gi;
-    $_ =~ s/\bmediumblob/blob/gi;
-    $_ =~ s/\btinyblob/blob/gi;
-    $_ =~ s/\bvarbinary\(\d+\)/blob/gi;
+    $_ =~ s/\blongblob\b/blob/gi;
+    $_ =~ s/\bmediumblob\b/blob/gi;
+    $_ =~ s/\btinyblob\b/blob/gi;
+    $_ =~ s/\bvarbinary\s*\(\d+\)/blob/gi;
 
     # escape sequence
     $_  =~ s/\\'/''/g;
     $_  =~ s/\\"/"/g;
 
     # functions
+    #$_  =~ s/ ?ON UPDATE\s*\S//gi;
     $_  =~ s/ ?ON UPDATE \w+\(?\)?//gi;
 
     # PRIMARY KEY / UNIQUE / KEY
-    if ($_  =~ /PRIMARY KEY \(`(\w+)`\)/) {
+    if ($_  =~ /\bPRIMARY KEY \(`(\w+)`\)/) {
         my $field = $1;
         $_  =~ s/, +PRIMARY KEY \(`\w+`\)//;
-        $_  =~ s/(`$field` \w+ NOT NULL)/$1 PRIMARY KEY/;
+        $_  =~ s/(`$field`\s+\w+\s+NOT NULL\b)/$1 PRIMARY KEY/i;
     }
-    if ($_  =~ /UNIQUE KEY `\w+` \(`(\w+)`\)/) {
+    if ($_  =~ /UNIQUE KEY\s+`\w+`\s+\(`(\w+)`\)/) {
         my $field = $1;
-        $_  =~ s/, +UNIQUE KEY `\w+` \(`\w+`\)//;
-        $_  =~ s/(`$field` \w+ NOT NULL)/$1 UNIQUE/;
+        $_  =~ s/, +UNIQUE KEY\s+`\w+`\s+\(`\w+`\)//;
+        $_  =~ s/(`$field`\s+\w+\s+NOT NULL)/$1 UNIQUE/;
     }
-    $_  =~ s/, +KEY `\w+` \(`\w+`\)//gi;
+    $_  =~ s/, +KEY\s+`\w+`\s+\(`\w+`\)//gi;
 
-    # DDL fin
+    # DDL Engine
     $_  =~ s/Engine=(\w+) ?//gi;
     $_  =~ s/AUTO_INCREMENT=(\d+) ?//gi;
     $_  =~ s/DEFAULT (CHARSET=\w+)? ?(COLLATE=\w+) ?//gi;
     $_  =~ s/ ?;/;/;
 
     # CREATE VIEW
-    #if ($_  =~ /CREATE ALGORITHM=\w+ .+ VIEW/) {
     $_  =~ s/CREATE ALGORITHM=\w+ .+ VIEW /CREATE VIEW /gi;
-    #}
 
     return $_;
 }
