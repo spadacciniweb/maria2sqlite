@@ -106,73 +106,73 @@ sub change_DDL {
 
     # (un-)signed)
     $_  =~ s/( (un)?signed)//gi;
-    $_  =~ s/ AUTO_INCREMENT/ AUTOINCREMENT/i;
+    $_  =~ s/\bAUTO_INCREMENT\b/AUTOINCREMENT/i;
     $_  =~ s/\(\)//g;
 
     # INTEGER
-    $_  =~ s/ bit\(\d+\)/ integer/gi;
-    $_  =~ s/ bigint\(\d+\)/ integer/gi;
-    $_  =~ s/ boolean/ integer/gi;
-    $_  =~ s/ bool/ integer/gi;
-    $_  =~ s/ int\(\d+\)/ integer/gi;
-    $_  =~ s/ int\d/ integer/gi;
-    $_  =~ s/ integer\(\d\)/ integer/gi;
-    $_  =~ s/ mediumint\(\d+\)/ integer/gi;
-    $_  =~ s/ middleint\(\d+\)/ integer/gi;
-    $_  =~ s/ serial/ integer NOT NULL AUTO_INCREMENT/gi; #TODO manca UNIQUE
-    $_  =~ s/ smallint\(\d+\)/ integer/gi;
-    $_  =~ s/ tinyint\(\d+\)/ integer/gi;
+    $_  =~ s/\bbit\(\d+\)/integer/gi;
+    $_  =~ s/\bbigint\(\d+\)/integer/gi;
+    $_  =~ s/\bbool\b/integer/gi;
+    $_  =~ s/\bboolean\b/integer/gi;
+    $_  =~ s/\bint\(\d+\)/integer/gi;
+    $_  =~ s/\bint\d/integer/gi;
+    $_  =~ s/\binteger\(\d\)/integer/gi;
+    $_  =~ s/\bmediumint\(\d+\)/integer/gi;
+    $_  =~ s/\bmiddleint\(\d+\)/integer/gi;
+    $_  =~ s/\bserial/integer NOT NULL AUTO_INCREMENT/gi; #TODO manca UNIQUE
+    $_  =~ s/\bsmallint\(\d+\)/integer/gi;
+    $_  =~ s/\btinyint\(\d+\)/integer/gi;
 
     # NUMERIC / REAL
-    $_ =~ s/ dec\(\d+,\d+\)/ numeric/gi;
-    $_ =~ s/ decimal/ numeric/gi;
-    $_ =~ s/ decimal\(\d+\)/ numeric/gi;
-    $_ =~ s/ decimal\(\d+,\d+\)/ numeric/gi;
-    $_ =~ s/ fixed\(\d+,\d+\)/ numeric/gi;
-    $_ =~ s/ numeric\(\d+\)/ numeric/gi;
-    $_ =~ s/ numeric\(\d+,\d+\)/ numeric/gi;
-    $_ =~ s/ numeric/ numeric/gi;
+    $_ =~ s/\bdec\(\d+,\d+\)/numeric/gi;
+    $_ =~ s/\bdecimal\b/numeric/gi;
+    $_ =~ s/\bdecimal\(\d+\)/numeric/gi;
+    $_ =~ s/\bdecimal\(\d+,\d+\)/numeric/gi;
+    $_ =~ s/\bfixed\(\d+,\d+\)/numeric/gi;
+    $_ =~ s/\bnumeric\b/numeric/gi;
+    $_ =~ s/\bnumeric\(\d+\)/numeric/gi;
+    $_ =~ s/\bnumeric\(\d+,\d+\)/numeric/gi;
 
     # REAL / FLOATING POINT
-    $_ =~ s/ float\(\d+\)/ real/gi;
-    $_ =~ s/ float\(\d+,\d+\)/ real/gi;
-    $_ =~ s/ float/ real/gi;
-    $_ =~ s/ double\(\d+\)/ real/gi;
-    $_ =~ s/ double\(\d+,\d+\)/ real/gi;
-    $_ =~ s/ double(\s+precision)?/ real/gi;
-    $_ =~ s/ real/ real/gi;
+    $_ =~ s/\bfloat\b/real/gi;
+    $_ =~ s/\bfloat\(\d+\)/real/gi;
+    $_ =~ s/\bfloat\(\d+,\d+\)/real/gi;
+    $_ =~ s/\bdouble\(\d+\)/real/gi;
+    $_ =~ s/\bdouble\(\d+,\d+\)/real/gi;
+    $_ =~ s/\bdouble(\s+precision)?/real/gi;
+    $_ =~ s/\breal\b/real/gi;
 
     # DATE / TIME / DATETIME / TIMESTAMP
-    $_ =~ s/ datetime\(\d+\)/ text/gi;
-    $_ =~ s/ datetime/ text/gi;
-    $_ =~ s/ date/ text/gi;
-    $_ =~ s/ timestamp\(\d+\)/ text/gi;
-    $_ =~ s/ timestamp/ text/gi;
-    $_ =~ s/ time/ text/gi;
-    $_ =~ s/ year\(\d+\)/ integer/gi;
+    $_ =~ s/\bdate\b/text/gi;
+    $_ =~ s/\bdatetime\b/text/gi;
+    $_ =~ s/\bdatetime\(\d+\)/text/gi;
+    $_ =~ s/\btimestamp\(\d+\)/text/gi;
+    $_ =~ s/\btimestamp\b/text/gi;
+    $_ =~ s/\btime\b/text/gi;
+    $_ =~ s/\byear\(\d+\)/integer/gi;
 
     # TEXT TYPES
-    $_ =~ s/ enum\([^)]+\)/ text/gi;
-    $_ =~ s/ json/ text/gi;
-    $_ =~ s/ nchar\(\d+\)/ text/gi;
-    $_ =~ s/ nvarchar\(\d+\)/ text/gi;
-    $_ =~ s/ tinytext/ text/gi;
-    $_ =~ s/ mediumtext/ text/gi;
-    $_ =~ s/ longtext/ text/gi;
-    $_ =~ s/ text/ text/gi;
-    $_ =~ s/ set\([^)]+\)/ text/gi;
-    $_ =~ s/ varchar\(\d+\)/ text/gi;
-    $_ =~ s/ varchar/ text/gi;
-    $_ =~ s/ char\(\d+\)/ text/gi;
-    $_ =~ s/ char/ text/gi;
+    $_ =~ s/\bchar\b/text/gi;
+    $_ =~ s/\bchar\(\d+\)/text/gi;
+    $_ =~ s/\benum\([^)]+\)/text/gi;
+    $_ =~ s/\bjson/text/gi;
+    $_ =~ s/\blongtext\b/text/gi;
+    $_ =~ s/\bmediumtext\b/text/gi;
+    $_ =~ s/\bnchar\(\d+\)/text/gi;
+    $_ =~ s/\bnvarchar\(\d+\)/text/gi;
+    $_ =~ s/\bset\([^)]+\)/text/gi;
+    $_ =~ s/\btext\b/text/gi;
+    $_ =~ s/\btinytext/text/gi;
+    $_ =~ s/\bvarchar\(\d+\)/text/gi;
+    $_ =~ s/\bvarchar\b/text/gi;
 
     # BLOB TYPES
-    $_ =~ s/ binary\(\d+\)/ blob/gi;
-    $_ =~ s/ varbinary\(\d+\)/ blob/gi;
-    $_ =~ s/ tinyblob/ blob/gi;
-    $_ =~ s/ mediumblob/ blob/gi;
-    $_ =~ s/ longblob/ blob/gi;
-    $_ =~ s/ blob/ blob/gi;
+    $_ =~ s/\bbinary\(\d+\)/blob/gi;
+    $_ =~ s/\bblob\b/blob/gi;
+    $_ =~ s/\blongblob/blob/gi;
+    $_ =~ s/\bmediumblob/blob/gi;
+    $_ =~ s/\btinyblob/blob/gi;
+    $_ =~ s/\bvarbinary\(\d+\)/blob/gi;
 
     # escape sequence
     $_  =~ s/\\'/''/g;
