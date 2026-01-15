@@ -73,7 +73,7 @@ sub unwrap_row {
     $_ = shift;
 
     if (/^\/\*!\d{5} (.+) ?\*\/(;)?$/) {
-        return $1 . ($2 || '');
+        return $1 . $2 || '';
     }
 
     return $_;
@@ -112,8 +112,9 @@ sub change_DDL {
     # INTEGER
     $_  =~ s/ bit\(\d+\)/ integer/gi;
     $_  =~ s/ bigint\(\d+\)/ integer/gi;
-    $_  =~ s/ bool/ integer/gi;
     $_  =~ s/ boolean/ integer/gi;
+    $_  =~ s/ bool/ integer/gi;
+    $_  =~ s/ int\(\d+\)/ integer/gi;
     $_  =~ s/ int\d/ integer/gi;
     $_  =~ s/ integer\(\d\)/ integer/gi;
     $_  =~ s/ mediumint\(\d+\)/ integer/gi;
@@ -121,36 +122,57 @@ sub change_DDL {
     $_  =~ s/ serial/ integer NOT NULL AUTO_INCREMENT/gi; #TODO manca UNIQUE
     $_  =~ s/ smallint\(\d+\)/ integer/gi;
     $_  =~ s/ tinyint\(\d+\)/ integer/gi;
-    $_  =~ s/ int\(\d+\)/ integer/gi;
 
-    # NUMERIC
-#    $_  =~ s/numeric(\(\\d+(\,\d+)?))? ( (un)?signed)?/integer/gi;
-#DECIMAL(10,5)
-#DOUBLE PRECISION[(M,D)]
-#BOOLEAN
-#DATE
-#DATETIME 
+    # NUMERIC / REAL
+    $_ =~ s/ dec\(\d+,\d+\)/ numeric/gi;
+    $_ =~ s/ decimal/ numeric/gi;
+    $_ =~ s/ decimal\(\d+\)/ numeric/gi;
+    $_ =~ s/ decimal\(\d+,\d+\)/ numeric/gi;
+    $_ =~ s/ fixed\(\d+,\d+\)/ numeric/gi;
+    $_ =~ s/ numeric\(\d+\)/ numeric/gi;
+    $_ =~ s/ numeric\(\d+,\d+\)/ numeric/gi;
+    $_ =~ s/ numeric/ numeric/gi;
 
-    # REAL
-# dec
-# double precision
-# fixed
-# float4
-# number
-# numeric
-# real
+    # REAL / FLOATING POINT
+    $_ =~ s/ float\(\d+\)/ real/gi;
+    $_ =~ s/ float\(\d+,\d+\)/ real/gi;
+    $_ =~ s/ float/ real/gi;
+    $_ =~ s/ double\(\d+\)/ real/gi;
+    $_ =~ s/ double\(\d+,\d+\)/ real/gi;
+    $_ =~ s/ double(\s+precision)?/ real/gi;
+    $_ =~ s/ real/ real/gi;
 
-    # TEXT
-#CHARACTER(20)
-#VARCHAR(255)
-#VARYING CHARACTER(255)
-#NCHAR(55)
-#NATIVE CHARACTER(70)
-#NVARCHAR(100)
-#TEXT
-#CLOB 
+    # DATE / TIME / DATETIME / TIMESTAMP
+    $_ =~ s/ datetime\(\d+\)/ text/gi;
+    $_ =~ s/ datetime/ text/gi;
+    $_ =~ s/ date/ text/gi;
+    $_ =~ s/ timestamp\(\d+\)/ text/gi;
+    $_ =~ s/ timestamp/ text/gi;
+    $_ =~ s/ time/ text/gi;
+    $_ =~ s/ year\(\d+\)/ integer/gi;
 
-    # BLOB
+    # TEXT TYPES
+    $_ =~ s/ enum\([^)]+\)/ text/gi;
+    $_ =~ s/ json/ text/gi;
+    $_ =~ s/ nchar\(\d+\)/ text/gi;
+    $_ =~ s/ nvarchar\(\d+\)/ text/gi;
+    $_ =~ s/ tinytext/ text/gi;
+    $_ =~ s/ mediumtext/ text/gi;
+    $_ =~ s/ longtext/ text/gi;
+    $_ =~ s/ text/ text/gi;
+    $_ =~ s/ set\([^)]+\)/ text/gi;
+    $_ =~ s/ varchar\(\d+\)/ text/gi;
+    $_ =~ s/ varchar/ text/gi;
+    $_ =~ s/ char\(\d+\)/ text/gi;
+    $_ =~ s/ char/ text/gi;
+
+    # BLOB TYPES
+    $_ =~ s/ binary\(\d+\)/ blob/gi;
+    $_ =~ s/ varbinary\(\d+\)/ blob/gi;
+    $_ =~ s/ tinyblob/ blob/gi;
+    $_ =~ s/ mediumblob/ blob/gi;
+    $_ =~ s/ longblob/ blob/gi;
+    $_ =~ s/ blob/ blob/gi;
 
     # escape sequence
     $_  =~ s/\\'/''/g;
