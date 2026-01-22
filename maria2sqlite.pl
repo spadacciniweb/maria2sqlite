@@ -105,7 +105,7 @@ sub change_DDL {
     $_ = shift;
 
     # (un-)signed)
-    $_  =~ s/\b(?:un)?signed\b//gi;
+    $_  =~ s/\s+(?:un)?signed\b//gi;
     $_  =~ s/\bAUTO_INCREMENT\b/AUTOINCREMENT/i;
     $_  =~ s/\(\s*\)//g;
 
