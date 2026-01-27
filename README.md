@@ -57,9 +57,15 @@ The following command-line options are supported:
     Set SQLite PRAGMA synchronous.
     Default: OFF
 
+--foreign_keys
+    Enable foreign keys
+
 --journal_mode=MODE
     Set SQLite PRAGMA journal_mode.
     Default: MEMORY
+
+--help, -h
+    Show help message
 ```
 
 ## Examples

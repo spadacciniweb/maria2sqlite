@@ -5,16 +5,37 @@ use Getopt::Long;
 
 my $debug;
 my $verbose;
+my $help;
 my $synchronous = 'OFF';
 my $foreign_keys;
 my $journal_mode = 'MEMORY';
 GetOptions ("debug"        => \$debug,
             "verbose"      => \$verbose,
+            "help"         => \$help,
             "synchronous"  => \$synchronous,
             "foreign_keys" => \$foreign_keys,
             "journal_mode" => \$journal_mode,
-           )
-    or die("Error in command line arguments\n");
+           );
+
+if ($help) {
+    print usage();
+    exit 0;
+}
+
+sub usage {
+    return <<"USAGE";
+Usage: maria2sqlite.pl [options]
+
+Options:
+  --debug                 Enable debug output (use for development purposes only).
+  --verbose               Enable verbose output (use for development purposes only).
+  --synchronous OFF|ON    Set synchronous mode (default: OFF)
+  --foreign_keys          Enable foreign keys
+  --journal_mode <value>  Set journal mode (default: MEMORY)
+  --help, -h              Show this help message
+
+USAGE
+}
 
 init_ddl();
 my $line;
