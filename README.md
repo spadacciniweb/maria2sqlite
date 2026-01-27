@@ -48,24 +48,27 @@ The following command-line options are supported:
 
 ```text
 --debug
-    Enable debug output.
+    enable debug output
 
 --verbose
-    Enable verbose output.
+    enable verbose output
 
 --synchronous=MODE
-    Set SQLite PRAGMA synchronous.
-    Default: OFF
-
---foreign_keys
-    Enable foreign keys
+    set SQLite PRAGMA synchronous
+    default: OFF
 
 --journal_mode=MODE
-    Set SQLite PRAGMA journal_mode.
-    Default: MEMORY
+    set SQLite PRAGMA journal_mode.
+    default: MEMORY
+
+--stats
+    prints a summary of dropped or converted constructs to STDERR
+
+--strict
+    aborts the conversion on unsupported constructs instead of silently dropping them
 
 --help, -h
-    Show help message
+    show help message
 ```
 
 ## Examples

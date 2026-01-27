@@ -8,12 +8,16 @@ my $verbose;
 my $help;
 my $synchronous = 'OFF';
 my $journal_mode = 'MEMORY';
-GetOptions ("debug"        => \$debug,
-            "verbose"      => \$verbose,
-            "help"         => \$help,
-            "synchronous"  => \$synchronous,
-            "journal_mode" => \$journal_mode,
-           );
+my $stats_enabled;
+my $strict;
+GetOptions ("debug"          => \$debug,
+            "verbose"        => \$verbose,
+            "help"           => \$help,
+            "synchronous=s"  => \$synchronous,
+            "journal_mode=s" => \$journal_mode,
+            "stats"          => \$stats_enabled,
+            "strict"         => \$strict,
+           ) or usage();
 
 if ($help) {
     print usage();
@@ -27,12 +31,23 @@ Usage: maria2sqlite.pl [options]
 Options:
   --debug                 Enable debug output (use for development purposes only).
   --verbose               Enable verbose output (use for development purposes only).
-  --synchronous OFF|ON    Set synchronous mode (default: OFF)
+  --synchronous <value>   Set synchronous mode (default: OFF)
   --journal_mode <value>  Set journal mode (default: MEMORY)
+  --stats                 Prints a summary of dropped or converted constructs to STDERR
+  --strict                Aborts the conversion on unsupported constructs instead of
+                          silently dropping them
   --help, -h              Show this help message
 
 USAGE
 }
+
+my %stats = (
+    dropped_charset   => 0,
+    dropped_collation => 0,
+    dropped_engine    => 0,
+    dropped_lock      => 0,
+    dropped_trigger   => 0,
+);
 
 init_ddl();
 my $line;
@@ -49,6 +64,7 @@ foreach my $row (<STDIN>) {
     if (is_whole_line($row)) {
         print "-O.$line.\n"
             if $debug;
+        $line = strict_mode($line);
         my $unwrap_line = unwrap_line($line);
         print "-U.$unwrap_line.\n"
             if $debug and ($verbose or $unwrap_line ne $line);
@@ -70,6 +86,15 @@ foreach my $row (<STDIN>) {
     }
 }
 end_ddl();
+
+if ($stats_enabled) {
+    print STDERR "\n# maria2sqlite statistics\n";
+    print STDERR "-"x25,"\n";
+
+    for my $k (sort keys %stats) {
+        printf STDERR "%-20s %4s\n", $k, $stats{$k};
+    }
+}
 
 exit 0;
 
@@ -109,12 +134,35 @@ sub unwrap_line {
     return $_;
 }
 
+sub strict_mode {
+    $_ = shift;
+
+    if ($_  =~ /\b(UN)?LOCK\s+TABLES.*;/i) {
+        $stats{dropped_lock}++
+            if $1;
+        die "Lock are not supported (line $.).\n"
+            if $strict;
+        return '';
+    }
+
+    if ($_  =~ /\b(CREATE|DROP)\s+TRIGGER.*;/i) {
+        $stats{dropped_trigger}++
+            if $1 eq 'CREATE';
+        die "Triggers are not supported (line $.).\n"
+            if $strict;
+        return '';
+    }
+
+    return $_;
+}
+
 sub delete_line {
     $_ = shift;
 
     if (/^SET / or
         /^\/\*M?!\d{6}\\- enable the sandbox mode \*\//
     ) {
+        $stats{delete_line}++;
         return '';
     }
 
@@ -200,11 +248,13 @@ sub change_DDL {
 
     # PRIMARY KEY / UNIQUE / KEY / FOREIGN KEY
     if ($_  =~ /,\s+PRIMARY KEY \(`(\w+)`\)/) {
+        $stats{primary_key}++;
         my $field = $1;
         $_  =~ s/,\s+PRIMARY KEY \(`\w+`\)//;
         $_  =~ s/(`$field`\s+\w+\s+NOT NULL\b)/$1 PRIMARY KEY/i;
     }
     if ($_  =~ /,\s+UNIQUE KEY\s+`\w+`\s+\(`(\w+)`\)/) {
+        $stats{unique_key}++;
         my $field = $1;
         $_  =~ s/, +UNIQUE KEY\s+`\w+`\s+\(`\w+`\)//;
         $_  =~ s/(`$field`\s+\w+\s+NOT NULL)/$1 UNIQUE/;
@@ -213,13 +263,22 @@ sub change_DDL {
     $_  =~ s/\bCONSTRAINT\s+`\w+`\s+FOREIGN KEY\s+\(`(\w+)`\)\s+REFERENCES\s+`(\w+)`\s+\(`(\w+)`\)/FOREIGN KEY($1) REFERENCES $2($3)/gi;
 
     # DDL Engine
-    $_  =~ s/Engine=(\w+) ?//gi;
+    if ($_  =~ /\bENGINE=/i) {
+        $stats{dropped_engine}++;
+        $_  =~ s/Engine=(\w+)\s*//i;
+    }
     $_  =~ s/AUTO_INCREMENT=(\d+) ?//gi;
-    $_  =~ s/DEFAULT (CHARSET=\w+)? ?(COLLATE=\w+) ?//gi;
+    if ($_ =~ /DEFAULT\s+CHARSET=/) {
+        $stats{dropped_charset}++;
+    }
+    if ($_ =~ /\bCOLLATE=/) {
+        $stats{dropped_collation}++;
+    }
+    $_  =~ s/DEFAULT (CHARSET=\w+)? ?(COLLATE=\w+) ?//i;
     $_  =~ s/ ?;/;/;
 
     # CREATE VIEW
-    $_  =~ s/CREATE ALGORITHM=\w+ .+ VIEW /CREATE VIEW /gi;
+    $_  =~ s/CREATE ALGORITHM=\w+ .+ VIEW /CREATE VIEW /i;
 
     return $_;
 }
