@@ -7,13 +7,11 @@ my $debug;
 my $verbose;
 my $help;
 my $synchronous = 'OFF';
-my $foreign_keys;
 my $journal_mode = 'MEMORY';
 GetOptions ("debug"        => \$debug,
             "verbose"      => \$verbose,
             "help"         => \$help,
             "synchronous"  => \$synchronous,
-            "foreign_keys" => \$foreign_keys,
             "journal_mode" => \$journal_mode,
            );
 
@@ -30,7 +28,6 @@ Options:
   --debug                 Enable debug output (use for development purposes only).
   --verbose               Enable verbose output (use for development purposes only).
   --synchronous OFF|ON    Set synchronous mode (default: OFF)
-  --foreign_keys          Enable foreign keys
   --journal_mode <value>  Set journal mode (default: MEMORY)
   --help, -h              Show this help message
 
@@ -79,14 +76,11 @@ exit 0;
 sub init_ddl {
     printf "PRAGMA synchronous = %s;\n", $synchronous;
     printf "PRAGMA journal_mode = %s;\n", $journal_mode;
-    printf "PRAGMA foreign_keys = OFF;\n";
     print "BEGIN TRANSACTION;\n";
 }
 
 sub end_ddl {
     print "END TRANSACTION;\n";
-    printf "PRAGMA foreign_keys = ON;"
-        if $foreign_keys;
 }
 
 sub is_whole_line {
@@ -204,18 +198,19 @@ sub change_DDL {
     #$_  =~ s/ ?ON UPDATE\s*\S//gi;
     $_  =~ s/ ?ON UPDATE \w+\(?\)?//gi;
 
-    # PRIMARY KEY / UNIQUE / KEY
-    if ($_  =~ /\bPRIMARY KEY \(`(\w+)`\)/) {
+    # PRIMARY KEY / UNIQUE / KEY / FOREIGN KEY
+    if ($_  =~ /,\s+PRIMARY KEY \(`(\w+)`\)/) {
         my $field = $1;
-        $_  =~ s/, +PRIMARY KEY \(`\w+`\)//;
+        $_  =~ s/,\s+PRIMARY KEY \(`\w+`\)//;
         $_  =~ s/(`$field`\s+\w+\s+NOT NULL\b)/$1 PRIMARY KEY/i;
     }
-    if ($_  =~ /UNIQUE KEY\s+`\w+`\s+\(`(\w+)`\)/) {
+    if ($_  =~ /,\s+UNIQUE KEY\s+`\w+`\s+\(`(\w+)`\)/) {
         my $field = $1;
         $_  =~ s/, +UNIQUE KEY\s+`\w+`\s+\(`\w+`\)//;
         $_  =~ s/(`$field`\s+\w+\s+NOT NULL)/$1 UNIQUE/;
     }
-    $_  =~ s/, +KEY\s+`\w+`\s+\(`\w+`\)//gi;
+    $_  =~ s/,\s+KEY\s+`\w+`\s+\(`\w+`\)//gi;
+    $_  =~ s/\bCONSTRAINT\s+`\w+`\s+FOREIGN KEY\s+\(`(\w+)`\)\s+REFERENCES\s+`(\w+)`\s+\(`(\w+)`\)/FOREIGN KEY($1) REFERENCES $2($3)/gi;
 
     # DDL Engine
     $_  =~ s/Engine=(\w+) ?//gi;
