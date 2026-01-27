@@ -6,10 +6,12 @@ use Getopt::Long;
 my $debug;
 my $verbose;
 my $synchronous = 'OFF';
+my $foreign_keys;
 my $journal_mode = 'MEMORY';
 GetOptions ("debug"        => \$debug,
             "verbose"      => \$verbose,
             "synchronous"  => \$synchronous,
+            "foreign_keys" => \$foreign_keys,
             "journal_mode" => \$journal_mode,
            )
     or die("Error in command line arguments\n");
@@ -56,11 +58,14 @@ exit 0;
 sub init_ddl {
     printf "PRAGMA synchronous = %s;\n", $synchronous;
     printf "PRAGMA journal_mode = %s;\n", $journal_mode;
+    printf "PRAGMA foreign_keys = OFF;\n";
     print "BEGIN TRANSACTION;\n";
 }
 
 sub end_ddl {
-    print "END TRANSACTION;";
+    print "END TRANSACTION;\n";
+    printf "PRAGMA foreign_keys = ON;"
+        if $foreign_keys;
 }
 
 sub is_whole_line {
