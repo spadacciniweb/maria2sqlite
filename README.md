@@ -2,7 +2,11 @@
 
 `maria2sqlite` is a small Unix-style command-line filter written in **Perl** that converts a **MariaDB/MySQL SQL dump** into a **SQLite-compatible SQL script**.
 
+This tool is not a full SQL parser by design.
+
 It reads SQL from standard input and writes the converted output to standard output, making it suitable for pipelines and large dumps without intermediate files.
+
+Important: SQL output is never polluted
 
 Repository:  
 https://github.com/spadacciniweb/maria2sqlite
