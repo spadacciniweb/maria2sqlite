@@ -9,7 +9,7 @@ my $help;
 my $synchronous = 'OFF';
 my $journal_mode = 'MEMORY';
 my $stats_enabled;
-my $strict;
+my $strict; my $warn;
 GetOptions ("debug"          => \$debug,
             "verbose"        => \$verbose,
             "help"           => \$help,
@@ -17,6 +17,7 @@ GetOptions ("debug"          => \$debug,
             "journal_mode=s" => \$journal_mode,
             "stats"          => \$stats_enabled,
             "strict"         => \$strict,
+            "warn"           => \$warn,
            ) or usage();
 
 if ($help) {
@@ -35,6 +36,8 @@ Options:
   --journal_mode <value>  Set journal mode (default: MEMORY)
   --stats                 Prints a summary of dropped or converted constructs to STDERR
   --strict                Aborts the conversion on unsupported constructs instead of
+                          silently dropping them
+  --warn                  Emit warning to STDERR on unsupported constructs instead of
                           silently dropping them
   --help, -h              Show this help message
 
@@ -150,16 +153,22 @@ sub strict_mode {
     if ($_  =~ /\b(UN)?LOCK\s+TABLES.*;/i) {
         $stats{dropped}{lock}++
             if $1;
-        die "Lock are not supported (line $.).\n"
-            if $strict;
+        if ($strict) {
+            die "Lock are not supported (line $.).\n";
+        } elsif ($warn) {
+            warn "Lock are not supported (line $.).\n";
+        }
         return '';
     }
 
     if ($_  =~ /\b(CREATE|DROP)\s+TRIGGER.*;/i) {
         $stats{dropped}{trigger}++
             if $1 eq 'CREATE';
-        die "Triggers are not supported (line $.).\n"
-            if $strict;
+        if ($strict) {
+            die "Triggers are not supported (line $.).\n"
+        } elsif ($warn) {
+            warn "Triggers are not supported (line $.).\n"
+        }
         return '';
     }
 

@@ -67,6 +67,9 @@ The following command-line options are supported:
 --strict
     aborts the conversion on unsupported constructs instead of silently dropping them
 
+--warn
+    emit warning to STDERR on unsupported constructs instead of silently dropping them
+
 --help, -h
     show help message
 ```
