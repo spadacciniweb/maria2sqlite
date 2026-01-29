@@ -125,8 +125,19 @@ Views depending on complex queries or vendor-specific SQL extensions may require
 
 - Migration of small to medium MariaDB/MySQL databases to SQLite
 - Development and testing
-- Offline data analysis
 - One-off data exports
+
+## Exit code
+
+Below are the alternative exit codes returned by the script.
+
+|Case    | Exit |
+---|---
+| success, no drops |   0 |
+| success, drops (no strict)  | 0 |
+| internal error |  1 |
+| strict violation  |   2 |
+
 
 ## License
 

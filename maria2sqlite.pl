@@ -154,7 +154,8 @@ sub strict_mode {
         $stats{dropped}{lock}++
             if $1;
         if ($strict) {
-            die "Lock are not supported (line $.).\n";
+            say "Lock are not supported (line $.)";
+            exit 2;
         } elsif ($warn) {
             warn "Lock are not supported (line $.).\n";
         }
@@ -165,7 +166,8 @@ sub strict_mode {
         $stats{dropped}{trigger}++
             if $1 eq 'CREATE';
         if ($strict) {
-            die "Triggers are not supported (line $.).\n"
+            say "Triggers are not supported (line $.).";
+            exit 2;
         } elsif ($warn) {
             warn "Triggers are not supported (line $.).\n"
         }
