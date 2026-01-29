@@ -98,15 +98,15 @@ foreach my $row (<STDIN>) {
 end_ddl();
 
 if ($stats_enabled) {
-    say STDERR "\n# maria2sqlite statistics";
-    say STDERR "-"x30;
+    print STDERR "\n# maria2sqlite statistics\n";
+    print STDERR "-"x30, "\n";
 
     for my $action (sort keys %stats) {
         for my $type (sort keys %{$stats{$action}}) {
             printf STDERR "%9s.%-11s %4s\n", $action, $type, $stats{$action}{$type};
         }
     }
-    say STDERR "-"x30;
+    print STDERR "-"x30, "\n";
 }
 
 exit 0;
@@ -154,7 +154,7 @@ sub strict_mode {
         $stats{dropped}{lock}++
             if $1;
         if ($strict) {
-            say "Lock are not supported (line $.)";
+            print "Lock are not supported (line $.)\n";
             exit 2;
         } elsif ($warn) {
             warn "Lock are not supported (line $.).\n";
@@ -166,7 +166,7 @@ sub strict_mode {
         $stats{dropped}{trigger}++
             if $1 eq 'CREATE';
         if ($strict) {
-            say "Triggers are not supported (line $.).";
+            print "Triggers are not supported (line $.).\n\n";
             exit 2;
         } elsif ($warn) {
             warn "Triggers are not supported (line $.).\n"
