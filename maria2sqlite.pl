@@ -42,11 +42,18 @@ USAGE
 }
 
 my %stats = (
-    dropped_charset   => 0,
-    dropped_collation => 0,
-    dropped_engine    => 0,
-    dropped_lock      => 0,
-    dropped_trigger   => 0,
+    dropped => { charset   => 0,
+                 collation => 0,
+                 engine    => 0,
+                 lock      => 0,
+                 others    => 0,
+                 trigger   => 0,
+                 set       => 0,
+                 sandbox   => 0,
+               },
+    rewritten => { primary_key => 0,
+                   unique_key  => 0,
+                 }
 );
 
 init_ddl();
@@ -88,12 +95,15 @@ foreach my $row (<STDIN>) {
 end_ddl();
 
 if ($stats_enabled) {
-    print STDERR "\n# maria2sqlite statistics\n";
-    print STDERR "-"x25,"\n";
+    say STDERR "\n# maria2sqlite statistics";
+    say STDERR "-"x30;
 
-    for my $k (sort keys %stats) {
-        printf STDERR "%-20s %4s\n", $k, $stats{$k};
+    for my $action (sort keys %stats) {
+        for my $type (sort keys %{$stats{$action}}) {
+            printf STDERR "%9s.%-11s %4s\n", $action, $type, $stats{$action}{$type};
+        }
     }
+    say STDERR "-"x30;
 }
 
 exit 0;
@@ -138,7 +148,7 @@ sub strict_mode {
     $_ = shift;
 
     if ($_  =~ /\b(UN)?LOCK\s+TABLES.*;/i) {
-        $stats{dropped_lock}++
+        $stats{dropped}{lock}++
             if $1;
         die "Lock are not supported (line $.).\n"
             if $strict;
@@ -146,7 +156,7 @@ sub strict_mode {
     }
 
     if ($_  =~ /\b(CREATE|DROP)\s+TRIGGER.*;/i) {
-        $stats{dropped_trigger}++
+        $stats{dropped}{trigger}++
             if $1 eq 'CREATE';
         die "Triggers are not supported (line $.).\n"
             if $strict;
@@ -159,10 +169,12 @@ sub strict_mode {
 sub delete_line {
     $_ = shift;
 
-    if (/^SET / or
-        /^\/\*M?!\d{6}\\- enable the sandbox mode \*\//
-    ) {
-        $stats{delete_line}++;
+    if (/^SET /) {
+        $stats{dropped}{set}++;
+        return '';
+    }
+    if (/^\/\*M?!\d{6}\\- enable the sandbox mode \*\//) {
+        $stats{dropped}{sandbox}++;
         return '';
     }
 
@@ -248,13 +260,13 @@ sub change_DDL {
 
     # PRIMARY KEY / UNIQUE / KEY / FOREIGN KEY
     if ($_  =~ /,\s+PRIMARY KEY \(`(\w+)`\)/) {
-        $stats{primary_key}++;
+        $stats{rewritten}{primary_key}++;
         my $field = $1;
         $_  =~ s/,\s+PRIMARY KEY \(`\w+`\)//;
         $_  =~ s/(`$field`\s+\w+\s+NOT NULL\b)/$1 PRIMARY KEY/i;
     }
     if ($_  =~ /,\s+UNIQUE KEY\s+`\w+`\s+\(`(\w+)`\)/) {
-        $stats{unique_key}++;
+        $stats{rewritten}{unique_key}++;
         my $field = $1;
         $_  =~ s/, +UNIQUE KEY\s+`\w+`\s+\(`\w+`\)//;
         $_  =~ s/(`$field`\s+\w+\s+NOT NULL)/$1 UNIQUE/;
@@ -264,15 +276,15 @@ sub change_DDL {
 
     # DDL Engine
     if ($_  =~ /\bENGINE=/i) {
-        $stats{dropped_engine}++;
+        $stats{dropped}{engine}++;
         $_  =~ s/Engine=(\w+)\s*//i;
     }
     $_  =~ s/AUTO_INCREMENT=(\d+) ?//gi;
     if ($_ =~ /DEFAULT\s+CHARSET=/) {
-        $stats{dropped_charset}++;
+        $stats{dropped}{charset}++;
     }
     if ($_ =~ /\bCOLLATE=/) {
-        $stats{dropped_collation}++;
+        $stats{dropped}{collation}++;
     }
     $_  =~ s/DEFAULT (CHARSET=\w+)? ?(COLLATE=\w+) ?//i;
     $_  =~ s/ ?;/;/;
