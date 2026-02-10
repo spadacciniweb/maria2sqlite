@@ -10,14 +10,14 @@ sub print_stats {
     my $stats = shift;
 
     print STDERR "\n# maria2sqlite statistics\n";
-    print STDERR "-"x35, "\n";
+    print STDERR "-"x40, "\n";
 
     for my $action (sort keys %$stats) {
         for my $type (sort keys %{$stats->{$action}}) {
-            printf STDERR "%9s.%-15s %5s\n", $action, $type, $stats->{$action}->{$type};
+            printf STDERR "%9s.%-20s %5s\n", $action, $type, $stats->{$action}->{$type};
         }
     }
-    print STDERR "-"x35, "\n";
+    print STDERR "-"x40, "\n";
 
     return 0;
 }

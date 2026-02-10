@@ -57,20 +57,8 @@ USAGE
 }
 
 my $stats = {
-    dropped => { db_charset    => 0,
-                 db_collation  => 0,
-                 engine        => 0,
-                 lock          => 0,
-                 others        => 0,
-                 trigger       => 0,
-                 set           => 0,
-                 sandbox       => 0,
-                 tbl_charset   => 0,
-                 tbl_collation => 0,
-               },
-    rewritten => { primary_key => 0,
-                   unique_key  => 0,
-                 }
+    dropped   => undef,
+    rewritten => undef,
 };
 
 init_session($synchronous, $journal_mode);
