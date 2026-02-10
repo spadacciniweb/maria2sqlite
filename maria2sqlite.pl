@@ -56,10 +56,11 @@ Options:
 USAGE
 }
 
-my $stats = {
-    dropped   => undef,
-    rewritten => undef,
-};
+my $stats = $stats_enabled
+    ? { dropped   => undef,
+        rewritten => undef,
+      }
+    : undef;
 
 init_session($synchronous, $journal_mode);
 my $line;
@@ -85,8 +86,8 @@ foreach my $row (<STDIN>) {
             if $debug and ($verbose or $clean_line ne $unwrap_line);
         my $ddl_line;
         ($ddl_line, $stats) = transform_DDL($clean_line, $stats);
-        ($ddl_line, $stats) = improve_readability($ddl_line, $stats);
-        ($ddl_line, $stats) = convert_functions($ddl_line, $stats);
+        $ddl_line = improve_readability($ddl_line);
+        $ddl_line = convert_functions($ddl_line);
         if ($ddl_line) {
             if ($debug and ($verbose or $ddl_line ne $clean_line)) {
                 print "-F.$ddl_line.\n"

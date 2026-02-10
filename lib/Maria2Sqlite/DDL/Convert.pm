@@ -14,7 +14,7 @@ our @EXPORT_OK = qw( change_keys
 sub transform_DDL {
     $_ = shift;
     my $stats = shift || undef;
-
+    
     ($_, $stats) = change_keys(
                        change_types(
                            change_specific( $_, $stats )
@@ -35,170 +35,170 @@ sub change_types {
 
     my $c;
     # un-)signed / autoincrement
-    $c = s/\s+(?:un)?signed//gi || 0
-        && $stats && ($stats->{rewritten}->{signed} += $c);
-    $c = s/\bAUTO_INCREMENT\b/AUTOINCREMENT/gi || 0
-        && $stats && ($stats->{rewritten}->{autoincrement} += $c);
-    $c = s/\(\s*\)//g || 0
-        && $stats && ($stats->{rewritten}->{function_brackets} += $c);
+    ($c = s/\s+(?:un)?signed//gi)
+        && $stats && ($stats->{rewritten}->{signed} += $c || 0);
+    ($c = s/\bAUTO_INCREMENT\b/AUTOINCREMENT/gi)
+        && $stats && ($stats->{rewritten}->{autoincrement} += $c || 0);
+    ($c = s/\(\s*\)//g)
+        && $stats && ($stats->{rewritten}->{function_brackets} += $c || 0);
 
     # INTEGER
-    $c = s/\bbit\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bbigint\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bbool\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bboolean\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bint\(\d+\)/integer/gi|| 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bint\d\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bint\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\binteger\(\d\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\binteger\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bmediumint\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bmediumint\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bmiddleint\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bmiddleint\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bserial\b/integer NOT NULL AUTO_INCREMENT/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bsmallint\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\bsmallint\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\btinyint\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
-    $c = s/\btinyint\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_integer} += $c);
+    ($c = s/\bbit\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bbigint\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bbool\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c) || 0;
+    ($c = s/\bboolean\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bint\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bint\d\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bint\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\binteger\(\d\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\binteger\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bmediumint\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bmediumint\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bmiddleint\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bmiddleint\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bserial\b/integer NOT NULL AUTO_INCREMENT/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bsmallint\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\bsmallint\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\btinyint\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
+    ($c = s/\btinyint\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_integer} += $c || 0);
 
     # NUMERIC
-    $c = s/\bdec\s*\(\d+,\d+\)/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bdec\b/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bdecimal\s*\(\d+(,\d+)?\)/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bdecimal\b/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bfixed\s*\(\d+,\d+\)/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bfixed\b/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bnumeric\s*\(\d+(,\d+)?\)/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
-    $c = s/\bnumeric\b/numeric/gi || 0
-        && $stats && ($stats->{rewritten}->{type_numeric} += $c);
+    ($c = s/\bdec\s*\(\d+,\d+\)/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bdec\b/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bdecimal\s*\(\d+(,\d+)?\)/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bdecimal\b/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bfixed\s*\(\d+,\d+\)/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bfixed\b/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bnumeric\s*\(\d+(,\d+)?\)/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
+    ($c = s/\bnumeric\b/numeric/gi)
+        && $stats && ($stats->{rewritten}->{type_numeric} += $c || 0);
 
     # REAL / FLOATING POINT
-    $c = s/\bfloat\s*\(\d+(,\d+)?\)/real/gi || 0
-        && $stats && ($stats->{rewritten}->{type_real} += $c);
-    $c = s/\bfloat\b/real/gi || 0
-        && $stats && ($stats->{rewritten}->{type_real} += $c);
-    $c = s/\bdouble(\s+precision)?\(\d+(,\d+)?\)/real/gi || 0
-        && $stats && ($stats->{rewritten}->{type_real} += $c);
-    $c = s/\bdouble(\s+precision)?\b/real/gi || 0
-        && $stats && ($stats->{rewritten}->{type_real} += $c);
-    $c = s/\breal\s*\(\d+(,\d+)?\)/real/gi || 0
-        && $stats && ($stats->{rewritten}->{type_real} += $c);
-    $c = s/\breal\b/real/gi || 0
-        && $stats && ($stats->{rewritten}->{type_real} += $c);
+    ($c = s/\bfloat\s*\(\d+(,\d+)?\)/real/gi)
+        && $stats && ($stats->{rewritten}->{type_real} += $c || 0);
+    ($c = s/\bfloat\b/real/gi)
+        && $stats && ($stats->{rewritten}->{type_real} += $c || 0);
+    ($c = s/\bdouble(\s+precision)?\(\d+(,\d+)?\)/real/gi)
+        && $stats && ($stats->{rewritten}->{type_real} += $c || 0);
+    ($c = s/\bdouble(\s+precision)?\b/real/gi)
+        && $stats && ($stats->{rewritten}->{type_real} += $c || 0);
+    ($c = s/\breal\s*\(\d+(,\d+)?\)/real/gi)
+        && $stats && ($stats->{rewritten}->{type_real} += $c || 0);
+    ($c = s/\breal\b/real/gi)
+        && $stats && ($stats->{rewritten}->{type_real} += $c || 0);
 
     # DATE / TIME / DATETIME / TIMESTAMP
-    $c = s/\bdate\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\bdatetime\s*\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\bdatetime\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\btime\s*\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\btime\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\btimestamp\s*\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\btimestamp\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\byear\s*\(\d+\)/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
-    $c = s/\byear\b/integer/gi || 0
-        && $stats && ($stats->{rewritten}->{type_datetime} += $c);
+    ($c = s/\bdate\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\bdatetime\s*\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\bdatetime\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\btime\s*\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\btime\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\btimestamp\s*\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\btimestamp\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\byear\s*\(\d+\)/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
+    ($c = s/\byear\b/integer/gi)
+        && $stats && ($stats->{rewritten}->{type_datetime} += $c || 0);
 
     # convert some  synonyms
-    $c = s/\bn?char varying(\(\d+\))/varchar$1/gi || 0
-        && $stats && ($stats->{rewritten}->{synonyms} += $c);
-    $c = s/\bclob\b/longtext/gi || 0
-        && $stats && ($stats->{rewritten}->{synonyms} += $c);
+    ($c = s/\bn?char varying(\(\d+\))/varchar$1/gi)
+        && $stats && ($stats->{rewritten}->{synonyms} += $c || 0);
+    ($c = s/\bclob\b/longtext/gi)
+        && $stats && ($stats->{rewritten}->{synonyms} += $c || 0);
 
     # BLOB TYPES
-    $c = s/\bbinary\(\d+\)/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\bblob\(\d+\)/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\bblob\b/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\bchar byte\b/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\blongblob\b/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\blong varbinary\b/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\bmediumblob\b/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\braw\(\d+\)/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\btinyblob\b/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
-    $c = s/\bvarbinary\(\d+\)/blob/gi || 0
-        && $stats && ($stats->{rewritten}->{type_blob} += $c);
+    ($c = s/\bbinary\(\d+\)/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\bblob\(\d+\)/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\bblob\b/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\bchar byte\b/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\blongblob\b/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\blong varbinary\b/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\bmediumblob\b/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\braw\(\d+\)/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\btinyblob\b/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
+    ($c = s/\bvarbinary\(\d+\)/blob/gi)
+        && $stats && ($stats->{rewritten}->{type_blob} += $c || 0);
 
     # TEXT TYPES
-    $c = s/\benum\s*\([^)]+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\binet[46]\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bjson\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\blong(?:\s+(?:char varying|character varying|varchar|varcharacter))?\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\blongtext\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bmediumtext\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bnational\s+(?:char varying|character varying|varchar|varcharacter)\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\b(?:nchar\s+)?varchar(?:acter)?\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bset\s*\([^)]+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\btext(?:\(\d+\))/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\btext\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\btinytext\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\buuid\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bvarchar2\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bn?varchar(?:acter)?\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\b(national\s+)?char\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\b(?:national\s+)?char(?:acter)?\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bn?char(?:\s+varying)?\(\d+\)/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
-    $c = s/\bnchar\b/text/gi || 0
-        && $stats && ($stats->{rewritten}->{type_text} += $c);
+    ($c = s/\benum\s*\([^)]+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\binet[46]\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bjson\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\blong(?:\s+(?:char varying|character varying|varchar|varcharacter))?\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\blongtext\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bmediumtext\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bnational\s+(?:char varying|character varying|varchar|varcharacter)\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\b(?:nchar\s+)?varchar(?:acter)?\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bset\s*\([^)]+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\btext(?:\(\d+\))/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\btext\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\btinytext\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\buuid\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bvarchar2\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bn?varchar(?:acter)?\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\b(national\s+)?char\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\b(?:national\s+)?char(?:acter)?\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bn?char(?:\s+varying)?\(\d+\)/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
+    ($c = s/\bnchar\b/text/gi)
+        && $stats && ($stats->{rewritten}->{type_text} += $c || 0);
 
     return $stats
         ? ($_, $stats)
@@ -207,22 +207,19 @@ sub change_types {
 
 sub change_others {
     $_ = shift;
-    my $stats = shift;
+    my $stats = shift || undef;
 
     my $c;
-    
-    $c = s/\\'/''/g || 0
-        && $stats && ($stats->{rewritten}->{escaping} += $c);
-    $c = s/\\"/"/g || 0
-        && $stats && ($stats->{rewritten}->{escaping} += $c);
+    ($c = s/\\'/''/g)
+        && $stats && ($stats->{rewritten}->{escaping} += $c || 0);
+    ($c = s/\\"/"/g)
+        && $stats && ($stats->{rewritten}->{escaping} += $c || 0);
 
     # functions
-    $c = s/ ?ON UPDATE \w+(?:\(\))?//gi || 0
-        && $stats && ($stats->{dropped}->{on_update} += $c);
+    ($c = s/ ?ON UPDATE \w+(?:\(\))?//gi)
+        && $stats && ($stats->{dropped}->{on_update} += $c || 0);
 
-    return $stats
-        ? ($_, $stats)
-        : $_;
+    return ($_, $stats)
 }
 
 sub change_keys {
