@@ -6,7 +6,18 @@ use warnings;
 use Exporter qw(import);
 our @EXPORT = qw( delete_line
                   improve_readability
+                  is_comment
                 );
+
+sub is_comment {
+    $_ = shift;
+
+    if (/^--/ or /^#\s+/) {
+        return 1;
+    }
+
+    return 0;
+}
 
 sub delete_line {
     $_ = shift;

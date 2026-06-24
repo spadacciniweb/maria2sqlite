@@ -66,6 +66,7 @@ init_session($synchronous, $journal_mode);
 my $line;
 foreach my $row (<STDIN>) {
     chomp $row;
+    next if is_comment($row);
     my $unwrap_row = unwrap_row($row);
     print "-R.$unwrap_row.\n"
         if $debug and $verbose and

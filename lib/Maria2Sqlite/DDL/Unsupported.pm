@@ -24,6 +24,16 @@ sub unsupported {
         $_ = '';
     }
 
+    if ($_  =~ /\bALTER\s+TABLE\s.*;/i) {
+        if ($strict) {
+            print "ALTER TABLE are not supported (line $.)\n";
+            exit 2;
+        } elsif ($warn) {
+            warn "ALTER TABLE are not supported (line $.).\n";
+        }
+        $_ = '';
+    }
+
     if ($_  =~ /\b(CREATE|DROP)\s+TRIGGER.*;/i) {
         $stats->{dropped}->{trigger}++
             if $1 eq 'CREATE';
